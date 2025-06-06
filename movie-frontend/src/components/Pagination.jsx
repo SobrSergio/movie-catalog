@@ -1,5 +1,4 @@
 // src/components/Pagination.jsx
-
 import React from 'react';
 
 /**
@@ -7,14 +6,14 @@ import React from 'react';
  *
  * Props:
  *   page: number — текущая страница (1-based)
- *   limit: number — количество записей на странице
- *   hasNext: boolean — есть ли следующая страница (в базовом варианте можно определить по длине массива)
- *   onPageChange: function(newPage) — вызывается при переходе на prev/next
+ *   limit: number — сколько записей на странице
+ *   hasNext: boolean — есть ли следующая страница
+ *   onPageChange: function(newPage) — вызывается при клике Prev/Next
  *   onLimitChange: function(newLimit) — вызывается при смене limit
  */
 function Pagination({ page, limit, hasNext, onPageChange, onLimitChange }) {
   return (
-    <div className="flex flex-wrap items-center justify-center space-x-4 py-4">
+    <div className="flex flex-wrap items-center justify-center space-x-4 py-4 max-w-6xl mx-auto">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}

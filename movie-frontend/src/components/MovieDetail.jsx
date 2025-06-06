@@ -1,5 +1,4 @@
 // src/components/MovieDetail.jsx
-
 import React, { useEffect, useState } from 'react';
 import { fetchMovieById } from '../api/movies';
 

@@ -1,15 +1,14 @@
 // src/components/Filters.jsx
-
-import React, { useState } from 'react';
+import React from 'react';
 
 /**
  * Компонент фильтров и сортировки.
  *
  * Props:
  *   filters: { title, director, year, min_rating, sort_by, order }
- *   onChange: функция({ name, value }) — вызывается при изменении любого поля
- *   onSubmit: функция() — вызывается при клике "Применить"
- *   onReset: функция() — вызывается при клике "Сбросить"
+ *   onChange: функция({ name, value }) — при изменении любого поля
+ *   onSubmit: функция() — при клике "Применить"
+ *   onReset: функция() — при клике "Сбросить"
  */
 function Filters({ filters, onChange, onSubmit, onReset }) {
   const handleInputChange = (e) => {

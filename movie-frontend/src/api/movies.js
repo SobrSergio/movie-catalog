@@ -1,60 +1,102 @@
 // src/api/movies.js
-
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api/movies/';
+// Общий инстанс для /api/movies
+const axiosInstance = axios.create({
+  baseURL: 'http://localhost:8080/api/movies',
+  timeout: 5000
+});
 
-/**
- * Получить список фильмов. Параметры:
- *   title: string — поиск по названию (LIKE)
- *   director: string — поиск по режиссёру (LIKE)
- *   year: number — точное совпадение года выпуска
- *   min_rating: number — фильмы с рейтингом >= min_rating
- *   sort_by: string — поле сортировки (id, title, year, rating)
- *   order: string — asc или desc
- *   page: number — номер страницы (1-based)
- *   limit: number — количество записей на странице
- *
- * @param {Object} params — необязательные параметры фильтрации/сортировки/пагинации.
- * @example
- *   fetchMovies({ director: 'Nolan', min_rating: 8, page: 2, limit: 5 });
- * @returns {Promise<AxiosResponse>} — промис с ответом сервера.
- */
-export function fetchMovies(params = {}) {
-  return axios.get(API_URL, { params });
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('movie_app_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('movie_app_token');
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Общий инстанс для /api/favorites
+const axiosInstanceFavorites = axios.create({
+  baseURL: 'http://localhost:8080/api/favorites',
+  timeout: 5000
+});
+
+axiosInstanceFavorites.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('movie_app_token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstanceFavorites.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('movie_app_token');
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// ───── Основные фильмы ─────
+
+export async function fetchMovies(params = {}) {
+  return axiosInstance.get('/', { params });
 }
 
-/**
- * Получить детали фильма по ID.
- * @param {number|string} id
- */
-export function fetchMovieById(id) {
-  return axios.get(`${API_URL}${id}`);
+export async function fetchMovieById(id) {
+  return axiosInstance.get(`/${id}`);
 }
 
-/**
- * Добавить новый фильм.
- * @param {Object} data — объект с полями:
- * @returns {Promise<AxiosResponse>} — промис с добавлённым объектом фильма.
- */
-export function createMovie(data) {
-  return axios.post(API_URL, data);
+export async function createMovie(data) {
+  return axiosInstance.post('/', data);
 }
 
-
-/**
- * Экспорт всех фильмов в JSON.
- * Возвращает файл для скачивания.
- */
-export function exportMovies() {
-  return axios.get(`${API_URL}export`, { responseType: 'blob' });
+export async function updateMovie(id, data) {
+  return axiosInstance.put(`/${id}`, data);
 }
 
+export async function deleteMovie(id) {
+  return axiosInstance.delete(`/${id}`);
+}
 
-/**
- * Импорт списка фильмов из массива объектов.
- * @param {Array} array — массив фильмов
- */
-export function importMovies(array) {
-  return axios.post(`${API_URL}import`, array);
+export async function exportMovies() {
+  return axiosInstance.get('/export', { responseType: 'blob' });
+}
+
+export async function importMovies(array) {
+  return axiosInstance.post('/import', array);
+}
+
+// ───── Избранное (Favorites) ─────
+
+export async function fetchFavorites() {
+  return axiosInstanceFavorites.get('/');
+}
+
+export async function addFavorite(id) {
+  return axiosInstanceFavorites.post(`/${id}`);
+}
+
+export async function removeFavorite(id) {
+  return axiosInstanceFavorites.delete(`/${id}`);
 }

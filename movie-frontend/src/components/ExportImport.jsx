@@ -1,5 +1,4 @@
 // src/components/ExportImport.jsx
-
 import React, { useRef, useState } from 'react';
 import { exportMovies, importMovies } from '../api/movies';
 
@@ -45,7 +44,7 @@ function ExportImport({ onImportComplete }) {
         setIsImporting(true);
         await importMovies(arr);
         alert(`Импортировано ${arr.length} фильмов.`);
-        onImportComplete();
+        onImportComplete && onImportComplete();
       } catch (err) {
         console.error('Ошибка при импорте фильмов:', err);
         alert('Не удалось импортировать. Проверьте формат JSON.');
@@ -57,7 +56,7 @@ function ExportImport({ onImportComplete }) {
   };
 
   return (
-    <div className="flex items-center justify-center space-x-4 mb-8">
+    <div className="flex items-center justify-center space-x-4 mb-8 max-w-4xl mx-auto">
       <button
         onClick={handleExport}
         className="bg-green-500 text-white font-semibold px-6 py-2 rounded hover:bg-green-400 transition"
