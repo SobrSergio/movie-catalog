@@ -1,0 +1,13 @@
+# backend
+/backend/bin/
+/backend/pkg/
+/backend/*.exe
+
+# frontend
+/node_modules/
+build/
+dist/
+
+# общие
+.env
+.DS_Store
